@@ -1,0 +1,53 @@
+name: Deploy to cPanel
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency: deploy
+
+env:
+  # Filled in from the cPanel account details (none of these are secret)
+  DEPLOY_HOST: ""        # e.g. server123.example.com
+  DEPLOY_PORT: "22"
+  DEPLOY_USER: ""        # cPanel username
+  APP_DIR: "piano"       # folder in the home directory; the domain's document root is APP_DIR/public
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check settings
+        env:
+          KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        run: |
+          if [ -z "$DEPLOY_HOST" ] || [ -z "$DEPLOY_USER" ]; then
+            echo "::error::Set DEPLOY_HOST and DEPLOY_USER in .github/workflows/deploy.yml"; exit 1
+          fi
+          if [ -z "$KEY" ]; then
+            echo "::error::Add the DEPLOY_SSH_KEY repository secret"; exit 1
+          fi
+
+      - name: Set up SSH
+        env:
+          KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/deploy && chmod 600 ~/.ssh/deploy
+          ssh-keyscan -p "$DEPLOY_PORT" "$DEPLOY_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+          printf 'Host target\n  HostName %s\n  Port %s\n  User %s\n  IdentityFile ~/.ssh/deploy\n  IdentitiesOnly yes\n' \
+            "$DEPLOY_HOST" "$DEPLOY_PORT" "$DEPLOY_USER" > ~/.ssh/config
+
+      - name: Copy files
+        run: |
+          ssh target "mkdir -p ~/$APP_DIR"
+          rsync -rlz --delete \
+            --exclude .git --exclude .github --exclude /config.php --exclude /.venv \
+            --exclude '/storage/jobs/*' \
+            ./ "target:$APP_DIR/"
+
+      - name: Set up the server (Python, config, cron) and report what it can run
+        run: ssh target "bash ~/$APP_DIR/scripts/server-setup.sh ~/$APP_DIR"

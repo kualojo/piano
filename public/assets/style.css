@@ -1,0 +1,27 @@
+:root { --ink: #1d1b18; --muted: #6b665c; --paper: #fbfaf7; --rh: #cc0000; --lh: #0033d9; --accent: #1f6f5c; }
+* { box-sizing: border-box; }
+body { margin: 0; font: 16px/1.5 system-ui, -apple-system, Segoe UI, sans-serif; color: var(--ink); background: var(--paper); }
+main { max-width: 960px; margin: 0 auto; padding: 0 16px 48px; }
+.top { max-width: 960px; margin: 0 auto; padding: 16px; }
+.brand { font-weight: 800; font-size: 20px; color: var(--ink); text-decoration: none; }
+.brand span { color: var(--rh); }
+.hero h1 { font-size: clamp(28px, 5vw, 44px); line-height: 1.1; margin: 32px 0 12px; }
+.hero > p { font-size: 18px; color: var(--muted); max-width: 40em; }
+.upload { margin: 28px 0; padding: 24px; border: 2px dashed #cfc8b8; border-radius: 12px; background: #fff; }
+.drop input { display: block; margin-bottom: 12px; }
+button, .button { display: inline-block; background: var(--accent); color: #fff; border: 0; border-radius: 8px;
+  padding: 10px 18px; font: inherit; font-weight: 600; cursor: pointer; text-decoration: none; }
+.small { font-size: 14px; color: var(--muted); }
+.unlock { display: flex; gap: 16px; align-items: center; justify-content: space-between; flex-wrap: wrap;
+  background: #fff4e0; border: 1px solid #f0d9a8; border-radius: 10px; padding: 12px 16px; margin: 12px 0 20px; }
+.unlock p { margin: 0; }
+.player { background: #fff; border: 1px solid #e3ded2; border-radius: 12px; padding: 12px; margin-bottom: 24px; }
+.controls { display: flex; flex-wrap: wrap; gap: 12px 18px; align-items: center; margin-bottom: 10px; }
+.controls button { padding: 8px 14px; }
+.controls input[type=range] { vertical-align: middle; width: 120px; }
+.rh { color: var(--rh); font-weight: 600; } .lh { color: var(--lh); font-weight: 600; }
+canvas { display: block; width: 100%; border-radius: 8px; }
+.status { margin: 8px 0 0; }
+.sheet { display: block; width: 100%; height: auto; border: 1px solid #e3ded2; border-radius: 8px; background: #fff; margin-bottom: 16px; }
+.pdf { width: 100%; height: 80vh; border: 1px solid #e3ded2; border-radius: 8px; }
+.foot { text-align: center; color: var(--muted); font-size: 13px; padding: 24px 16px; }
